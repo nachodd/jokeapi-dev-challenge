@@ -55,7 +55,7 @@ app.get('/jokes/ten', (req, res) => {
 
 app.get('/jokes/paginated', (req, res, next) => {
   try {
-    const { from, number } = req.query;
+    const { from, number, sortBy, sortOrder } = req.query;
     const fromIndex = parseInt(from, 10);
     const num = parseInt(number, 10);
 
@@ -63,7 +63,7 @@ app.get('/jokes/paginated', (req, res, next) => {
       return res.status(400).send('Invalid query parameters');
     }
 
-    const result = getPaginatedJokes(fromIndex, num);
+    const result = getPaginatedJokes(fromIndex, num, sortBy, sortOrder);
     res.json(result);
   } catch (e) {
     return next(e);

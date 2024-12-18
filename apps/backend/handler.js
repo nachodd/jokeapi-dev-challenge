@@ -49,13 +49,25 @@ const jokeById = (id) => (jokes.filter(jk => jk.id === id)[0]);
 /**
  * Get paginated jokes
  * @param {Number} from - start index
- * @param {Number} to - end index
  * @param {Number} number - number of jokes to return
+ * @param {String} sortBy - field to sort by
+ * @param {String} sortOrder - order to sort (asc or desc)
  * @returns {Object} - paginated jokes and hasMore flag
  */
-const getPaginatedJokes = (from, number) => {
+const getPaginatedJokes = (from, number, sortBy = '', sortOrder = '') => {
+  let sortedJokes = jokes;
+
+  if (sortBy) {
+    sortedJokes = jokes.slice().sort((a, b) => {
+      if (sortOrder === 'desc') {
+        return b[sortBy] > a[sortBy] ? 1 : -1;
+      }
+      return a[sortBy] > b[sortBy] ? 1 : -1;
+    });
+  }
+
   const to = from + number;
-  const paginatedJokes = jokes.slice(from, to).slice(0, number);
+  const paginatedJokes = sortedJokes.slice(from, to).slice(0, number);
   const hasMore = to < jokes.length;
   return { jokes: paginatedJokes, hasMore, total: jokes.length };
 };
