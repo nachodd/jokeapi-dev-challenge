@@ -6,3 +6,5 @@ export interface Joke {
 }
 
 export type JokeType = string[]
+
+export type SortOrder = 'asc' | 'desc' | ''

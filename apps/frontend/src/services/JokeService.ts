@@ -1,5 +1,5 @@
 import apiService from './apiService'
-import type { Joke, JokeType } from '../types/jokeTypes'
+import type { Joke, JokeType, SortOrder } from '../types/jokeTypes'
 
 export default {
   async getRandomJoke(): Promise<Joke> {
@@ -22,8 +22,8 @@ export default {
     const { data } = await apiService.get('/jokes/ten')
     return data
   },
-  async getPaginatedJokes(from: number, number: number): Promise<{ jokes: Joke[], total: number }> {
-    const { data } = await apiService.get('/jokes/paginated', { from, number })
+  async getPaginatedJokes(from: number, number: number, sortBy: string = '', sortOrder: SortOrder = ''): Promise<{ jokes: Joke[], total: number }> {
+    const { data } = await apiService.get('/jokes/paginated', { from, number, sortBy, sortOrder })
     return data
   },
   async getJokesByTypeRandom(type: string): Promise<Joke> {
