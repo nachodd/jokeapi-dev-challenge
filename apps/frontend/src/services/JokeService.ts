@@ -2,37 +2,48 @@ import apiService from './apiService'
 import type { Joke, JokeType } from '../types/jokeTypes'
 
 export default {
-  getRandomJoke() {
-    return apiService.get('/random_joke')
+  async getRandomJoke(): Promise<Joke> {
+    const { data } = await apiService.get('/random_joke')
+    return data
   },
-  getRandomTen() {
-    return apiService.get('/random_ten')
+  async getRandomTen(): Promise<Joke[]> {
+    const { data } = await apiService.get('/random_ten')
+    return data
   },
-  getJokesRandom() {
-    return apiService.get('/jokes/random')
+  async getJokesRandom(): Promise<Joke> {
+    const { data } = await apiService.get('/jokes/random')
+    return data
   },
-  getJokesRandomNum(num: number) {
-    return apiService.get(`/jokes/random/${num}`)
+  async getJokesRandomNum(num: number): Promise<Joke[]> {
+    const { data } = await apiService.get(`/jokes/random/${num}`)
+    return data
   },
-  getJokesTen() {
-    return apiService.get('/jokes/ten')
+  async getJokesTen(): Promise<Joke[]> {
+    const { data } = await apiService.get('/jokes/ten')
+    return data
   },
-  getPaginatedJokes(from: number, to: number, number: number) {
-    return apiService.get('/jokes/paginated', { from, to, number })
+  async getPaginatedJokes(from: number, number: number): Promise<{ jokes: Joke[], total: number }> {
+    const { data } = await apiService.get('/jokes/paginated', { from, number })
+    return data
   },
-  getJokesByTypeRandom(type: string) {
-    return apiService.get(`/jokes/${type}/random`)
+  async getJokesByTypeRandom(type: string): Promise<Joke> {
+    const { data } = await apiService.get(`/jokes/${type}/random`)
+    return data
   },
-  getJokesByTypeTen(type: string) {
-    return apiService.get(`/jokes/${type}/ten`)
+  async getJokesByTypeTen(type: string): Promise<Joke[]> {
+    const { data } = await apiService.get(`/jokes/${type}/ten`)
+    return data
   },
-  getJokeById(id: number) {
-    return apiService.get(`/jokes/${id}`)
+  async getJokeById(id: number): Promise<Joke> {
+    const { data } = await apiService.get(`/jokes/${id}`)
+    return data
   },
-  addJoke(joke: Joke) {
-    return apiService.post('/jokes', joke)
+  async addJoke(joke: Joke): Promise<Joke> {
+    const { data } = await apiService.post('/jokes', joke)
+    return data
   },
-  getTypes() {
-    return apiService.get('/types')
+  async getTypes(): Promise<JokeType> {
+    const { data } = await apiService.get('/types')
+    return data
   }
 }
