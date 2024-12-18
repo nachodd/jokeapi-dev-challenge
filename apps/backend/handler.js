@@ -53,10 +53,11 @@ const jokeById = (id) => (jokes.filter(jk => jk.id === id)[0]);
  * @param {Number} number - number of jokes to return
  * @returns {Object} - paginated jokes and hasMore flag
  */
-const getPaginatedJokes = (from, to, number) => {
+const getPaginatedJokes = (from, number) => {
+  const to = from + number;
   const paginatedJokes = jokes.slice(from, to).slice(0, number);
   const hasMore = to < jokes.length;
-  return { jokes: paginatedJokes, hasMore };
+  return { jokes: paginatedJokes, hasMore, total: jokes.length };
 };
 
 /**

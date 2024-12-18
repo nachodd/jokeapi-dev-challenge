@@ -55,16 +55,15 @@ app.get('/jokes/ten', (req, res) => {
 
 app.get('/jokes/paginated', (req, res, next) => {
   try {
-    const { from, to, number } = req.query;
+    const { from, number } = req.query;
     const fromIndex = parseInt(from, 10);
-    const toIndex = parseInt(to, 10);
     const num = parseInt(number, 10);
 
-    if (isNaN(fromIndex) || isNaN(toIndex) || isNaN(num)) {
+    if (isNaN(fromIndex) || isNaN(num)) {
       return res.status(400).send('Invalid query parameters');
     }
 
-    const result = getPaginatedJokes(fromIndex, toIndex, num);
+    const result = getPaginatedJokes(fromIndex, num);
     res.json(result);
   } catch (e) {
     return next(e);
