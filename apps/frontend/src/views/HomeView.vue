@@ -6,7 +6,7 @@ import {
   TabsTrigger,
 } from '@/components/ui/tabs'
 
-import TableServer from '@/components/TableServer.vue';
+import JokesTable from '@/components/JokesTable.vue';
 
 </script>
 
@@ -25,10 +25,10 @@ import TableServer from '@/components/TableServer.vue';
           </TabsTrigger>
         </TabsList>
         <TabsContent value="server" class="mt-8">
-          <TableServer />
+          <JokesTable model="server" />
         </TabsContent>
         <TabsContent value="local">
-
+          <JokesTable model="local" />
         </TabsContent>
       </Tabs>
     </div>

@@ -1,19 +1,45 @@
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import JokeService from '@/services/JokeService'
 import type { Joke, SortOrder } from '@/types/jokeTypes'
 
-export function useJokes() {
+export function useJokes(serverSide: boolean = true) {
   const jokes = ref<Joke[]>([])
+  const allJokes = ref<Joke[]>([])
   const totalJokes = ref(0)
   const currentPage = ref(1)
   const sortBy = ref<string>('')
   const sortOrder = ref<SortOrder>('')
 
-  const fetchJokes = async (page: number) => {
-    const { jokes: jokesResponse, total } = await JokeService.getPaginatedJokes((page - 1) * 10, 10, sortBy.value, sortOrder.value)
-    jokes.value = jokesResponse
-    totalJokes.value = total
+  const updatePage = (page: number) => {
     currentPage.value = page
+  }
+
+  const fetchJokes = async (isMounting: boolean = false) => {
+    if (serverSide) {
+      const { jokes: jokesResponse, total } = await JokeService.getPaginatedJokes((currentPage.value - 1) * 10, 10, sortBy.value, sortOrder.value)
+      jokes.value = jokesResponse
+      totalJokes.value = total
+    } else {
+      if (isMounting) {
+        allJokes.value = await JokeService.getJokes()
+        totalJokes.value = allJokes.value.length
+      }
+      updateLocalJokes()
+    }
+  }
+
+  const updateLocalJokes = () => {
+    const sortedJokes = [...allJokes.value]
+    if (sortBy.value) {
+      sortedJokes.sort((a, b) => {
+        if (sortOrder.value === 'asc') {
+          return a[sortBy.value as keyof Joke] > b[sortBy.value as keyof Joke] ? 1 : -1
+        } else {
+          return a[sortBy.value as keyof Joke] < b[sortBy.value as keyof Joke] ? 1 : -1
+        }
+      })
+    }
+    jokes.value = sortedJokes.slice((currentPage.value - 1) * 10, currentPage.value * 10)
   }
 
   const toggleSort = (field: string) => {
@@ -30,11 +56,21 @@ export function useJokes() {
       sortBy.value = field
       sortOrder.value = 'asc'
     }
-    fetchJokes(currentPage.value)
+    if (serverSide) {
+      fetchJokes()
+    } else {
+      updateLocalJokes()
+    }
   }
 
+  watch([sortBy, sortOrder, currentPage], () => {
+    if (!serverSide && allJokes.value.length) {
+      updateLocalJokes()
+    }
+  })
+
   onMounted(() => {
-    fetchJokes(currentPage.value)
+    fetchJokes(true)
   })
 
   return {
@@ -44,6 +80,7 @@ export function useJokes() {
     sortBy,
     sortOrder,
     fetchJokes,
+    updatePage,
     toggleSort
   }
 }

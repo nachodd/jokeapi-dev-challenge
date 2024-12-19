@@ -45,5 +45,9 @@ export default {
   async getTypes(): Promise<JokeType> {
     const { data } = await apiService.get('/types')
     return data
-  }
+  },
+  async getJokes(): Promise<Joke[]> {
+    const { data } = await apiService.get('/jokes')
+    return data
+  },
 }

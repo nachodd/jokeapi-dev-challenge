@@ -20,10 +20,13 @@ import {
   PaginationPrev,
 } from '@/components/ui/pagination'
 import SortArrow from '@/components/SortArrow.vue'
-
 import { useJokes } from '@/composables/useJokes'
 
-const { jokes, totalJokes, sortBy, sortOrder, fetchJokes, toggleSort } = useJokes()
+const props = defineProps<{
+  model: 'server' | 'local'
+}>()
+
+const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJokes(props.model === 'server')
 </script>
 
 <template>
@@ -32,16 +35,16 @@ const { jokes, totalJokes, sortBy, sortOrder, fetchJokes, toggleSort } = useJoke
       <TableCaption>List of Jokes</TableCaption>
       <TableHeader>
         <TableRow>
-          <TableHead @click="toggleSort('id')" :class="{ 'font-bold': sortBy === 'id' }">
+          <TableHead @click="toggleSort('id')" class="cursor-pointer" :class="{ 'font-bold': sortBy === 'id' }">
             ID <span class="inline-block" v-if="sortBy === 'id'"><SortArrow :sortOrder="sortOrder" /></span>
           </TableHead>
-          <TableHead @click="toggleSort('type')" :class="{ 'font-bold': sortBy === 'type' }">
+          <TableHead @click="toggleSort('type')" class="cursor-pointer" :class="{ 'font-bold': sortBy === 'type' }">
             Type <span class="inline-block" v-if="sortBy === 'type'"><SortArrow :sortOrder="sortOrder" /></span>
           </TableHead>
-          <TableHead @click="toggleSort('setup')" :class="{ 'font-bold': sortBy === 'setup' }">
+          <TableHead @click="toggleSort('setup')" class="cursor-pointer" :class="{ 'font-bold': sortBy === 'setup' }">
             Setup <span class="inline-block" v-if="sortBy === 'setup'"><SortArrow :sortOrder="sortOrder" /></span>
           </TableHead>
-          <TableHead @click="toggleSort('punchline')" :class="{ 'font-bold': sortBy === 'punchline' }">
+          <TableHead @click="toggleSort('punchline')" class="cursor-pointer" :class="{ 'font-bold': sortBy === 'punchline' }">
             Punchline <span class="inline-block" v-if="sortBy === 'punchline'"><SortArrow :sortOrder="sortOrder" /></span>
           </TableHead>
         </TableRow>
@@ -57,7 +60,7 @@ const { jokes, totalJokes, sortBy, sortOrder, fetchJokes, toggleSort } = useJoke
     </Table>
   </div>
   <div class="flex justify-center mt-4">
-    <Pagination v-slot="{ page }" :total="totalJokes" :sibling-count="2" show-edges :default-page="1" @update:page="fetchJokes">
+    <Pagination v-slot="{ page }" :total="totalJokes" :sibling-count="2" show-edges :default-page="1" @update:page="updatePage">
       <PaginationList v-slot="{ items }" class="flex items-center gap-1">
         <PaginationFirst />
         <PaginationPrev />
