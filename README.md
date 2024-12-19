@@ -1,14 +1,8 @@
-# Turborepo starter
+# Joke API Vue 3 Demo
 
-This is an official starter Turborepo.
+## Description
 
-## Using this example
-
-Run the following command:
-
-```sh
-npx create-turbo@latest
-```
+This project is a code challenge that demonstrates a Joke API using a Vue 3 frontend and a Node.js backend. The application allows users to view, add, edit, and delete jokes. It supports both server-side and client-side operations for sorting and pagination.
 
 ## What's inside?
 
@@ -16,61 +10,48 @@ This Turborepo includes the following packages/apps:
 
 ### Apps and Packages
 
-- `frontend`: a Vue.js app
-- `backend`: a Node app
+- `frontend`: a Vue.js app using:
+  - [Vue 3](https://v3.vuejs.org/)
+  - [Vite](https://vitejs.dev/)
+  - [Vue Router](https://router.vuejs.org/)
+  - [Vee-Validate](https://vee-validate.logaretm.com/v4/)
+  - [Zod](https://zod.dev/)
+  - [Tailwind CSS](https://tailwindcss.com/)
+  - [shadcn-vue](https://www.shadcn-vue.com/)
+  - [Lucide Icons](https://lucide.dev/)
+- `backend`: a Node.js app using:
+  - [Express](https://expressjs.com/)
+  - [Limiting Middleware](https://www.npmjs.com/package/limiting-middleware)
 
-### Utilities
+### Monorepo
 
-This Turborepo has some additional tools already setup for you:
+This project is based on a monorepo setup using [Turborepo](https://turborepo.org/).
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+## How to run
 
-### Build
+### Prerequisites
 
-To build all apps and packages, run the following command:
+Make sure you have the following installed:
 
-```
-cd my-turborepo
-pnpm build
+- [Node.js](https://nodejs.org/)
+- [pnpm](https://pnpm.io/)
+
+### Installation
+
+Clone the repository and install dependencies:
+
+```bash
+git clone https://github.com/nachodd/joke-api-vue3-demo.git
+cd joke-api-vue3-demo
+pnpm install
 ```
 
 ### Develop
 
-To develop all apps and packages, run the following command:
+To run the development server for all the apps, run the following command:
 
-```
-cd my-turborepo
+```bash
 pnpm dev
 ```
 
-### Remote Caching
-
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
-
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your Turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
+This will start both the frontend and backend applications. The frontend will be available at `http://localhost:5173/` and the backend at `http://localhost:3005`.
