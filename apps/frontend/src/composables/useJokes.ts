@@ -36,14 +36,13 @@ export function useJokes(serverSide: boolean = true) {
   }
 
   const updateLocalJokes = () => {
-    const sortedJokes = [...allJokes.value]
+    let sortedJokes = [...allJokes.value]
     if (sortBy.value) {
-      sortedJokes.sort((a, b) => {
-        if (sortOrder.value === 'asc') {
+      sortedJokes = sortedJokes.slice().sort((a, b) => {
+        if (sortOrder.value === 'desc') {
           return a[sortBy.value as keyof Joke] > b[sortBy.value as keyof Joke] ? 1 : -1
-        } else {
-          return a[sortBy.value as keyof Joke] < b[sortBy.value as keyof Joke] ? 1 : -1
         }
+        return a[sortBy.value as keyof Joke] < b[sortBy.value as keyof Joke] ? 1 : -1
       })
     }
     jokes.value = sortedJokes.slice((currentPage.value - 1) * 10, currentPage.value * 10)

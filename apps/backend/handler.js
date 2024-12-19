@@ -60,9 +60,9 @@ const getPaginatedJokes = (from, number, sortBy = '', sortOrder = '') => {
   if (sortBy) {
     sortedJokes = jokes.slice().sort((a, b) => {
       if (sortOrder === 'desc') {
-        return b[sortBy] > a[sortBy] ? 1 : -1;
+        return a[sortBy] > b[sortBy] ? 1 : -1;
       }
-      return a[sortBy] > b[sortBy] ? 1 : -1;
+      return a[sortBy] < b[sortBy] ? 1 : -1;
     });
   }
 
