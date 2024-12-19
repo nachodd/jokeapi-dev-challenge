@@ -59,20 +59,7 @@ export function useJokes(serverSide: boolean = true) {
       sortBy.value = field
       sortOrder.value = 'asc'
     }
-    // if (isServerSide.value) {
-    //   fetchJokes()
-    // } else {
-    //   updateLocalJokes()
-    // }
   }
-
-  /* watch([sortBy, sortOrder, currentPage], () => {
-    if (isServerSide.value) {
-      fetchJokes()
-    } else if (!isServerSide.value && allJokes.value.length) {
-      updateLocalJokes()
-    }
-  }) */
 
   const addLocalJoke = (joke: Joke) => {
     allJokes.value.push(joke)

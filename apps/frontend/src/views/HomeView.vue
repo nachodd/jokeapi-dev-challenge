@@ -38,9 +38,12 @@ import type { Joke, JokeType } from '@/types/JokeTypes.d'
 
 type JokeModalMode = 'create' | 'edit' | ''
 
+// State management
 const activeTab = ref('server')
 const isServerSide = computed(() => activeTab.value === 'server')
 let jokesComposable = useJokes(activeTab.value === 'server')
+
+// Watchers
 watch(() => activeTab.value, () => {
   jokesComposable = useJokes(activeTab.value === 'server')
   jokesComposable.fetchJokes(true)
@@ -54,6 +57,7 @@ watch([jokesComposable.sortBy, jokesComposable.sortOrder, jokesComposable.curren
   }
 })
 
+// Fetch joke types on mount
 const jokesTypes: Ref<JokeType> = ref([])
 
 onMounted(async () => {
@@ -61,12 +65,13 @@ onMounted(async () => {
   jokesComposable.fetchJokes(true)
 })
 
+// Modal state management
 const showConfirmDeleteModal = ref(false)
-
 const showModal = ref(false)
 const mode = ref<JokeModalMode>('')
 const jokeEditDelete = ref<Joke | null>(null)
 
+// Modal handlers
 const openDeleteModal = (joke: Joke) => {
   jokeEditDelete.value = joke
   showConfirmDeleteModal.value = true
@@ -75,33 +80,6 @@ const closeDeleteModal = () => {
   jokeEditDelete.value = null
   showConfirmDeleteModal.value = false
 }
-const handleDeleteJoke = async () => {
-  try {
-    if (activeTab.value === 'local') {
-      // const { deleteLocalJoke } = useJokes()
-      jokesComposable.deleteLocalJoke(jokeEditDelete.value?.id || 0)
-    } else {
-      await JokeService.deleteJoke(jokeEditDelete.value?.id || -1)
-      // const { fetchJokes } = useJokes(true)
-      jokesComposable.fetchJokes()
-    }
-
-    toast({
-      title: 'Deletion successful',
-      variant: 'default',
-      description: 'Joke deleted successfully!',
-    })
-  } catch (error: any) {
-    toast({
-      title: 'Error',
-      variant: 'destructive',
-      description: `An error occurred while deleting the joke: ${error?.message}`,
-    })
-  }
-
-  closeDeleteModal()
-}
-
 const openEditCreateModal = (openInMode: JokeModalMode, jokeToEdit?: Joke) => {
   mode.value = openInMode
   jokeEditDelete.value = jokeToEdit || null
@@ -112,6 +90,8 @@ const closeCreateEditModal = () => {
   jokeEditDelete.value = null
   mode.value = ''
 }
+
+// Handle form submission
 const handleFormSubmit = async (values: { type: string, setup: string, punchline: string }) => {
   const joke: Joke = {
     id: mode.value === 'edit' ? (jokeEditDelete.value?.id || 0) : 0,
@@ -138,6 +118,7 @@ const handleFormSubmit = async (values: { type: string, setup: string, punchline
   closeCreateEditModal()
 }
 
+// Handle joke creation
 const handleFormCreateSubmission = async (joke: Joke) => {
   if (activeTab.value === 'local') {
     joke.id = jokesComposable.allJokes.value.length + 1
@@ -153,6 +134,7 @@ const handleFormCreateSubmission = async (joke: Joke) => {
   })
 }
 
+// Handle joke editing
 const handleFormEditSubmission = async (joke: Joke) => {
   if (activeTab.value === 'local') {
     jokesComposable.editLocalJoke(joke)
@@ -167,6 +149,32 @@ const handleFormEditSubmission = async (joke: Joke) => {
   })
 }
 
+// Handle joke deletion
+const handleDeleteJoke = async () => {
+  try {
+    if (activeTab.value === 'local') {
+      jokesComposable.deleteLocalJoke(jokeEditDelete.value?.id || 0)
+    } else {
+      await JokeService.deleteJoke(jokeEditDelete.value?.id || -1)
+      jokesComposable.fetchJokes()
+    }
+
+    toast({
+      title: 'Deletion successful',
+      variant: 'default',
+      description: 'Joke deleted successfully!',
+    })
+  } catch (error: any) {
+    toast({
+      title: 'Error',
+      variant: 'destructive',
+      description: `An error occurred while deleting the joke: ${error?.message}`,
+    })
+  }
+
+  closeDeleteModal()
+}
+
 </script>
 
 <template>
@@ -175,7 +183,8 @@ const handleFormEditSubmission = async (joke: Joke) => {
     <div class="flex justify-between">
       <h1 class="text-4xl font-bold text-center">Joke API Demo</h1>
 
-      <Dialog :open="showModal">
+      <!-- Add/Edit Joke Dialog -->
+      <Dialog :open="showModal" @update:open="showModal = $event">
         <DialogTrigger as-child>
           <Button @click="openEditCreateModal('create')">Add New Joke</Button>
         </DialogTrigger>
@@ -192,6 +201,7 @@ const handleFormEditSubmission = async (joke: Joke) => {
         </DialogContent>
       </Dialog>
 
+      <!-- Delete Joke Confirmation Dialog -->
       <AlertDialog :open="showConfirmDeleteModal">
         <AlertDialogContent>
           <AlertDialogHeader>
@@ -212,6 +222,7 @@ const handleFormEditSubmission = async (joke: Joke) => {
       </AlertDialog>
     </div>
 
+    <!-- Tabs for Server/Local operations -->
     <div class="flex justify-center mt-8">
       <Tabs default-value="server" class="w-full" v-model="activeTab">
         <TabsList class="grid w-full grid-cols-2">

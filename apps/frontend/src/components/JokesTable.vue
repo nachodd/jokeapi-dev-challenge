@@ -58,7 +58,7 @@ const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJoke
           <TableCell>{{ joke.type }}</TableCell>
           <TableCell>{{ joke.setup }}</TableCell>
           <TableCell>{{ joke.punchline }}</TableCell>
-          <TableCell>
+          <TableCell class="flex gap-2">
             <Button @click="emit('edit', joke)" variant="outline">Edit</Button>
             <Button @click="emit('delete', joke)" variant="destructive">Delete</Button>
           </TableCell>
@@ -66,7 +66,7 @@ const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJoke
       </TableBody>
     </Table>
   </div>
-  <div class="flex justify-center mt-4">
+  <div class="flex justify-center mt-4 mb-20">
     <Pagination v-slot="{ page }" :total="totalJokes" :sibling-count="2" show-edges :default-page="1" @update:page="updatePage">
       <PaginationList v-slot="{ items }" class="flex items-center gap-1">
         <PaginationFirst />
