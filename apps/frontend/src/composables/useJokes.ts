@@ -13,6 +13,10 @@ const isServerSide = ref(true)
 export function useJokes(serverSide: boolean = true) {
   isServerSide.value = serverSide
 
+  const setServerSide = (serverSide: boolean) => {
+    isServerSide.value = serverSide
+  }
+
   const updatePage = (page: number) => {
     currentPage.value = page
   }
@@ -94,5 +98,6 @@ export function useJokes(serverSide: boolean = true) {
     editLocalJoke,
     deleteLocalJoke,
     updateLocalJokes,
+    setServerSide,
   }
 }

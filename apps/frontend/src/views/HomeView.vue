@@ -48,18 +48,32 @@ type JokeModalMode = 'create' | 'edit' | ''
 // State management
 const activeTab = ref('server')
 const isServerSide = computed(() => activeTab.value === 'server')
-let jokesComposable = useJokes(activeTab.value === 'server')
+const jokesComposable = useJokes(isServerSide.value)
 
 // Watchers
 watch(() => activeTab.value, () => {
-  jokesComposable = useJokes(activeTab.value === 'server')
-  jokesComposable.fetchJokes(true)
+  jokesComposable.setServerSide(isServerSide.value)
+  // Check if the page is different from 1. If so, reset the page to 1
+  let pageChanged = false
+  if (jokesComposable.currentPage.value !== 1) {
+    jokesComposable.updatePage(1)
+    pageChanged = true
+  }
+
+  // If page have change, the below watcher will fetch the jokes.
+  // if not, we need to fetch the jokes manually.
+  // If not server side, we need to fetch the jokes manually too.
+  if (!isServerSide.value) {
+    jokesComposable.fetchJokes(true)
+  } else if (isServerSide.value && !pageChanged){
+    jokesComposable.fetchJokes()
+  }
 })
 
 watch([jokesComposable.sortBy, jokesComposable.sortOrder, jokesComposable.currentPage], () => {
   if (isServerSide.value) {
     jokesComposable.fetchJokes()
-  } else if (!isServerSide.value && jokesComposable.allJokes.value.length) {
+  } else {
     jokesComposable.updateLocalJokes()
   }
 })

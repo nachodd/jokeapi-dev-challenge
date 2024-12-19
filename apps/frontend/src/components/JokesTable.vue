@@ -28,7 +28,7 @@ const props = defineProps<{
 
 const emit = defineEmits(['edit', 'delete'])
 
-const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJokes(props.model === 'server')
+const { jokes, totalJokes, sortBy, sortOrder, currentPage, updatePage, toggleSort } = useJokes(props.model === 'server')
 </script>
 
 <template>
@@ -67,7 +67,7 @@ const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJoke
     </Table>
   </div>
   <div class="flex justify-center mt-4 mb-20">
-    <Pagination v-slot="{ page }" :total="totalJokes" :sibling-count="2" show-edges :default-page="1" @update:page="updatePage">
+    <Pagination v-slot="{ page }" :total="totalJokes" :sibling-count="2" show-edges :default-page="1" :page="currentPage"  @update:page="updatePage">
       <PaginationList v-slot="{ items }" class="flex items-center gap-1">
         <PaginationFirst />
         <PaginationPrev />
