@@ -84,4 +84,46 @@ const addJoke = (joke) => {
   return newJoke;
 };
 
-module.exports = { jokes, types, randomJoke, randomN, randomTen, randomSelect, jokeById, jokeByType, count, getPaginatedJokes, addJoke };
+/**
+ * Update an existing joke
+ * @param {Object} joke - joke object with id, type, setup, and punchline
+ * @returns {Object} - the updated joke
+ */
+const updateJoke = (joke) => {
+  const index = jokes.findIndex(jk => jk.id === joke.id);
+  if (index === -1) {
+    throw new Error('Joke not found');
+  }
+  jokes[index] = joke;
+  fs.writeFileSync(path.join(__dirname, './jokes/index.json'), JSON.stringify(jokes, null, 2));
+  return joke;
+};
+
+/**
+ * Delete a joke by ID
+ * @param {Number} id - joke id
+ */
+const deleteJoke = (id) => {
+  const index = jokes.findIndex(jk => jk.id === id);
+  if (index === -1) {
+    throw new Error('Joke not found');
+  }
+  jokes.splice(index, 1);
+  fs.writeFileSync(path.join(__dirname, './jokes/index.json'), JSON.stringify(jokes, null, 2));
+};
+
+module.exports = {
+  jokes,
+  types,
+  randomJoke,
+  randomN,
+  randomTen,
+  randomSelect,
+  jokeById,
+  jokeByType,
+  count,
+  getPaginatedJokes,
+  addJoke,
+  updateJoke,
+  deleteJoke
+};

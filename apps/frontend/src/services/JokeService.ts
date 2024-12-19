@@ -1,5 +1,5 @@
 import apiService from './apiService'
-import type { Joke, JokeType, SortOrder } from '../types/jokeTypes'
+import type { Joke, JokeType, SortOrder } from '../types/JokeTypes'
 
 export default {
   async getRandomJoke(): Promise<Joke> {
@@ -41,6 +41,13 @@ export default {
   async addJoke(joke: Joke): Promise<Joke> {
     const { data } = await apiService.post('/jokes', joke)
     return data
+  },
+  async updateJoke(joke: Joke): Promise<Joke> {
+    const { data } = await apiService.put(`/jokes/${joke.id}`, joke)
+    return data
+  },
+  async deleteJoke(id: number): Promise<void> {
+    await apiService.delete(`/jokes/${id}`);
   },
   async getTypes(): Promise<JokeType> {
     const { data } = await apiService.get('/types')

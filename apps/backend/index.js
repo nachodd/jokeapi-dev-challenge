@@ -1,6 +1,6 @@
 const express = require('express');
 const LimitingMiddleware = require('limiting-middleware');
-const { types, randomJoke, randomTen, randomSelect, jokeByType, jokeById, count, getPaginatedJokes, addJoke, jokes } = require('./handler');
+const { types, randomJoke, randomTen, randomSelect, jokeByType, jokeById, count, getPaginatedJokes, addJoke, updateJoke, deleteJoke, jokes } = require('./handler');
 
 const app = express();
 
@@ -8,8 +8,12 @@ app.use(new LimitingMiddleware().limitByIp());
 
 app.use((req, res, next) => {
   res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
   next();
 });
+
+app.use(express.json());
 
 app.get('/', (req, res) => {
   res.send('Try /random_joke, /random_ten, /jokes/random, or /jokes/ten , /jokes/random/<any-number>');
@@ -97,6 +101,30 @@ app.post('/jokes', (req, res, next) => {
     }
     const newJoke = addJoke({ type, setup, punchline });
     res.status(201).json(newJoke);
+  } catch (e) {
+    return next(e);
+  }
+});
+
+app.put('/jokes/:id', (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { type, setup, punchline } = req.body;
+    if (!type || !setup || !punchline) {
+      return res.status(400).send('Invalid joke data');
+    }
+    const updatedJoke = updateJoke({ id: +id, type, setup, punchline });
+    res.status(200).json(updatedJoke);
+  } catch (e) {
+    return next(e);
+  }
+});
+
+app.delete('/jokes/:id', (req, res, next) => {
+  try {
+    const { id } = req.params;
+    deleteJoke(+id);
+    res.status(204).send();
   } catch (e) {
     return next(e);
   }

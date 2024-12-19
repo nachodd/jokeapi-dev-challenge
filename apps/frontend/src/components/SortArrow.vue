@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MoveUpIcon, MoveDownIcon } from 'lucide-vue-next'
-import type { SortOrder } from '@/types/jokeTypes'
+import type { SortOrder } from '@/types/JokeTypes.d'
 const { sortOrder } = defineProps<{
   sortOrder: SortOrder
 }>()

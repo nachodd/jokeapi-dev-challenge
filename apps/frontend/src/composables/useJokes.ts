@@ -1,15 +1,15 @@
 import { ref, onMounted, watch } from 'vue'
 import JokeService from '@/services/JokeService'
-import type { Joke, SortOrder } from '@/types/jokeTypes'
+import type { Joke, SortOrder } from '@/types/JokeTypes.d'
+
+const jokes = ref<Joke[]>([])
+const allJokes = ref<Joke[]>([])
+const totalJokes = ref(0)
+const currentPage = ref(1)
+const sortBy = ref<string>('')
+const sortOrder = ref<SortOrder>('')
 
 export function useJokes(serverSide: boolean = true) {
-  const jokes = ref<Joke[]>([])
-  const allJokes = ref<Joke[]>([])
-  const totalJokes = ref(0)
-  const currentPage = ref(1)
-  const sortBy = ref<string>('')
-  const sortOrder = ref<SortOrder>('')
-
   const updatePage = (page: number) => {
     currentPage.value = page
   }
@@ -64,14 +64,30 @@ export function useJokes(serverSide: boolean = true) {
   }
 
   watch([sortBy, sortOrder, currentPage], () => {
-    if (!serverSide && allJokes.value.length) {
+    if (serverSide) {
+      fetchJokes()
+    } else if (!serverSide && allJokes.value.length) {
       updateLocalJokes()
     }
   })
 
-  onMounted(() => {
-    fetchJokes(true)
-  })
+  const addLocalJoke = (joke: Joke) => {
+    allJokes.value.push(joke)
+    updateLocalJokes()
+  }
+
+  const editLocalJoke = (joke: Joke) => {
+    const index = allJokes.value.findIndex(j => j.id === joke.id)
+    allJokes.value.splice(index, 1, joke)
+    updateLocalJokes()
+  }
+
+  const deleteLocalJoke = (id: number) => {
+    const index = allJokes.value.findIndex(j => j.id === id)
+    allJokes.value.splice(index, 1)
+    updateLocalJokes()
+  }
+
 
   return {
     jokes,
@@ -81,6 +97,9 @@ export function useJokes(serverSide: boolean = true) {
     sortOrder,
     fetchJokes,
     updatePage,
-    toggleSort
+    toggleSort,
+    addLocalJoke,
+    editLocalJoke,
+    deleteLocalJoke,
   }
 }

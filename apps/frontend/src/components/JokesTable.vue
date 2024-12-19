@@ -26,6 +26,8 @@ const props = defineProps<{
   model: 'server' | 'local'
 }>()
 
+const emit = defineEmits(['edit', 'delete'])
+
 const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJokes(props.model === 'server')
 </script>
 
@@ -47,6 +49,7 @@ const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJoke
           <TableHead @click="toggleSort('punchline')" class="cursor-pointer" :class="{ 'font-bold': sortBy === 'punchline' }">
             Punchline <span class="inline-block" v-if="sortBy === 'punchline'"><SortArrow :sortOrder="sortOrder" /></span>
           </TableHead>
+          <TableHead>Action</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -55,6 +58,10 @@ const { jokes, totalJokes, sortBy, sortOrder, updatePage, toggleSort } = useJoke
           <TableCell>{{ joke.type }}</TableCell>
           <TableCell>{{ joke.setup }}</TableCell>
           <TableCell>{{ joke.punchline }}</TableCell>
+          <TableCell>
+            <Button @click="emit('edit', joke)" variant="outline">Edit</Button>
+            <Button @click="emit('delete', joke)" variant="destructive">Delete</Button>
+          </TableCell>
         </TableRow>
       </TableBody>
     </Table>
