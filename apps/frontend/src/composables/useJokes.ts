@@ -1,4 +1,4 @@
-import { ref, onMounted, watch } from 'vue'
+import { ref, watch } from 'vue'
 import JokeService from '@/services/JokeService'
 import type { Joke, SortOrder } from '@/types/JokeTypes.d'
 
@@ -8,22 +8,25 @@ const totalJokes = ref(0)
 const currentPage = ref(1)
 const sortBy = ref<string>('')
 const sortOrder = ref<SortOrder>('')
+const isServerSide = ref(true)
 
 export function useJokes(serverSide: boolean = true) {
+  isServerSide.value = serverSide
+
   const updatePage = (page: number) => {
     currentPage.value = page
   }
 
   const fetchJokes = async (isMounting: boolean = false) => {
-    if (serverSide) {
+    if (isServerSide.value) {
       const { jokes: jokesResponse, total } = await JokeService.getPaginatedJokes((currentPage.value - 1) * 10, 10, sortBy.value, sortOrder.value)
       jokes.value = jokesResponse
       totalJokes.value = total
     } else {
       if (isMounting) {
         allJokes.value = await JokeService.getJokes()
-        totalJokes.value = allJokes.value.length
       }
+      totalJokes.value = allJokes.value.length
       updateLocalJokes()
     }
   }
@@ -56,23 +59,24 @@ export function useJokes(serverSide: boolean = true) {
       sortBy.value = field
       sortOrder.value = 'asc'
     }
-    if (serverSide) {
-      fetchJokes()
-    } else {
-      updateLocalJokes()
-    }
+    // if (isServerSide.value) {
+    //   fetchJokes()
+    // } else {
+    //   updateLocalJokes()
+    // }
   }
 
-  watch([sortBy, sortOrder, currentPage], () => {
-    if (serverSide) {
+  /* watch([sortBy, sortOrder, currentPage], () => {
+    if (isServerSide.value) {
       fetchJokes()
-    } else if (!serverSide && allJokes.value.length) {
+    } else if (!isServerSide.value && allJokes.value.length) {
       updateLocalJokes()
     }
-  })
+  }) */
 
   const addLocalJoke = (joke: Joke) => {
     allJokes.value.push(joke)
+    totalJokes.value = allJokes.value.length
     updateLocalJokes()
   }
 
@@ -85,12 +89,13 @@ export function useJokes(serverSide: boolean = true) {
   const deleteLocalJoke = (id: number) => {
     const index = allJokes.value.findIndex(j => j.id === id)
     allJokes.value.splice(index, 1)
+    totalJokes.value = allJokes.value.length
     updateLocalJokes()
   }
 
-
   return {
     jokes,
+    allJokes,
     totalJokes,
     currentPage,
     sortBy,
@@ -101,5 +106,6 @@ export function useJokes(serverSide: boolean = true) {
     addLocalJoke,
     editLocalJoke,
     deleteLocalJoke,
+    updateLocalJokes,
   }
 }
