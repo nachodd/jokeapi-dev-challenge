@@ -24,10 +24,17 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog'
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
 import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/toast'
 import { useToast } from '@/components/ui/toast/use-toast'
 const { toast } = useToast()
+import { InfoIcon } from 'lucide-vue-next'
 
 import JokesTable from '@/components/JokesTable.vue';
 import JokeForm from '@/components/JokeForm.vue'
@@ -226,12 +233,43 @@ const handleDeleteJoke = async () => {
     <div class="flex justify-center mt-8">
       <Tabs default-value="server" class="w-full" v-model="activeTab">
         <TabsList class="grid w-full grid-cols-2">
-          <TabsTrigger value="server">
-            Server Side operations
-          </TabsTrigger>
-          <TabsTrigger value="local">
-            Local operations
-          </TabsTrigger>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <TabsTrigger value="server" class="w-full">
+                  <div class="flex flex-row gap-2 items-center">Server Side operations <InfoIcon class="w-4 h-4" /></div>
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                <p>
+                  The <strong>Sorting</strong> and <strong>Pagination</strong> will be done <strong>on the Server</strong>. This means that the data will be fetched from the server <strong>every time</strong> you sort or paginate.
+                </p>
+                <p>
+                  Also, creation, edition, and deletion <strong>will be persisted on the server.</strong>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger>
+                <TabsTrigger value="local" class="w-full">
+                  <div class="flex flex-row gap-2 items-center">Local operations <InfoIcon class="w-4 h-4" /></div>
+                </TabsTrigger>
+              </TooltipTrigger>
+              <TooltipContent class="max-w-xs">
+                <p>
+                  The <strong>Sorting</strong> and <strong>Pagination</strong> will be done <strong>on the Client</strong>. This means that the data will be fetched from the server <strong>only once</strong>.
+                </p>
+                <p>
+                  Also, creation, edition, and deletion <strong>won't be persisted on the server.</strong>
+                </p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+
+
         </TabsList>
         <TabsContent value="server" class="mt-8">
           <JokesTable model="server" @edit="(joke) => openEditCreateModal('edit', joke)" @delete="openDeleteModal"  />
